@@ -9,6 +9,7 @@ from flask_cors import CORS
 from hw_telephone import telephone
 from decimal import Decimal
 from http import HTTPStatus
+from decimal import Decimal, getcontext, InvalidOperation
 
 app = Flask(__name__)
 
@@ -17,11 +18,9 @@ cors_config = {
 }
 CORS(app, resources=cors_config)
 
-
 def replace_empty_with_dash(df):
     df = df.fillna('-')
     return df
-
 
 @app.route('/api/TelecomCharge_data', methods=['GET'])
 def telecom_charge_data():
@@ -43,7 +42,6 @@ def telecom_charge_data():
         return flask.jsonify({"message": "Test case file not found"}), HTTPStatus.NOT_FOUND
 
     return flask.jsonify({"tableData": ast.literal_eval(df.to_json(orient='records'))})
-
 
 @app.route('/api/TelecomCharge_result', methods=['GET'])
 def telecom_charge_result():
@@ -73,7 +71,14 @@ def telecom_charge_result():
         df.iloc[i, 8] = "2151300"
         df.iloc[i, 9] = ""
 
-        if str(Decimal(str(df.iloc[i, 3])).normalize()) != df.iloc[i, 4]:
+        try:
+            expected_output = float(df.iloc[i, 3])
+            actual_output = float(df.iloc[i, 4])
+        except ValueError:
+            expected_output = str(df.iloc[i, 3])
+            actual_output = str(df.iloc[i, 4])
+        
+        if expected_output != actual_output:
             df.iloc[i, 5] = "N"
             fail_count += 1
         else:
@@ -85,8 +90,7 @@ def telecom_charge_result():
     if not os.path.exists(result_directory):
         os.makedirs(result_directory)
 
-    df.to_csv(os.path.join(result_directory,
-              f"telephone_result_{value}.csv"), index=False)
+    df.to_csv(os.path.join(result_directory, f"telephone_result_{value}.csv"), index=False)
 
     chart_data = [
         {"name": "Y", "value": pass_count},
