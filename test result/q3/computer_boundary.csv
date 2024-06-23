@@ -1,0 +1,20 @@
+ID,Host,Monitor,Peripheral,Expected Output,Actual Output,Result,Analysis Strategy
+1,0,0,0,host must be positive,host must be positive,Y,健壮边界值分析
+2,1,0,0,monitor must be positive,monitor must be positive,Y,健壮边界值分析
+3,1,1,0,peripheral must be positive,peripheral must be positive,Y,健壮边界值分析
+4,1,1,1,10.0,10.0,Y,基本边界值分析
+5,1,1,2,14.5,14.5,Y,基本边界值分析
+6,8,6,4,56.0,56.0,Y,基本边界值分析
+7,9,10,10,97.5,97.5,Y,基本边界值分析
+8,10,10,10,100.0,100.0,Y,基本边界值分析
+9,10,10,11,156.75,156.75,Y,基本边界值分析
+10,14,14,14,210.0,210.0,Y,基本边界值分析
+11,17,18,18,266.25,266.25,Y,基本边界值分析
+12,18,18,18,270.0,270.0,Y,基本边界值分析
+13,18,19,18,366.0,366.0,Y,基本边界值分析
+14,50,50,50,1000.0,1000.0,Y,基本边界值分析
+15,69,80,90,1635.0,1635.0,Y,基本边界值分析
+16,70,80,90,1640.0,1640.0,Y,基本边界值分析
+17,71,80,90,host exceeded,host exceeded,Y,健壮边界值分析
+18,70,81,90,monitor exceeded,monitor exceeded,Y,健壮边界值分析
+19,70,80,91,peripheral exceeded,peripheral exceeded,Y,健壮边界值分析
