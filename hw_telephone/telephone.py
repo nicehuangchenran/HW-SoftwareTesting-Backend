@@ -29,6 +29,9 @@ def telephone(minute: int, fail_time: int) -> str:
 
     if fail_time < 0:
         return "fail time can't be negative"
+    
+    if fail_time > 11:
+        return "fail time can't be greater than the maximum times"
 
     # Initialize variables for maximum allowable fail time and discount rate
     max_fail_time = 0
