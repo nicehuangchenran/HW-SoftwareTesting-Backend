@@ -103,86 +103,30 @@ def telecom_charge_result():
 
 # --------------------------------hcr---------------------------------
 
-@app.route('/api/Triangle_data', methods=['GET'])
-def telecom_charge_data2():
-    current_directory = os.path.dirname(os.path.abspath(__file__))
-    value = request.args.get('value')
-    file_mapping = {
-        '1': os.path.join(current_directory,'test_case','q1','triangle_boundary.csv'),
-        '2': os.path.join(current_directory,'test_case','q1','triangle_equivalent.csv'),
-    }
-
-    file_path = file_mapping.get(value)
-    if not file_path:
-        return flask.jsonify({"message": "Invalid value parameter"}), HTTPStatus.BAD_REQUEST
-
-    try:
-        df = pd.read_csv(file_path)
-        df = replace_empty_with_dash(df)
-    except FileNotFoundError:
-        return flask.jsonify({"message": "Test case file not found"}), HTTPStatus.NOT_FOUND
-
-    # return flask.jsonify({"tableData": df.to_json(orient='records')})
-    return flask.jsonify({"tableData": ast.literal_eval(df.to_json(orient='records'))})
-
-@app.route('/api/Triangle_result', methods=['GET'])
-def telecom_charge_result2():
-    current_directory = os.path.dirname(os.path.abspath(__file__))
-    value = request.args.get('value')
-    file_mapping = {
-        '1': os.path.join(current_directory,'test result', 'q1', 'triangle_boundary.csv'),
-        '2': os.path.join(current_directory,'test result', 'q1', 'triangle_equivalent.csv'),
-    }
-
-    file_path = file_mapping.get(value)
-    if not file_path:
-        return flask.jsonify({"message": "Invalid value parameter"}), HTTPStatus.BAD_REQUEST
-
-    try:
-        df = pd.read_csv(file_path)
-    except FileNotFoundError:
-        return flask.jsonify({"message": "Test case file not found"}), HTTPStatus.NOT_FOUND
-
-    total_count = df.shape[0]
-    pass_count = 0
-    fail_count = 0
-
-    for i in range(total_count):
-        df.iloc[i, 4] = telephone.telephone(df.iloc[i, 1], df.iloc[i, 2])
-        df.iloc[i, 7] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        df.iloc[i, 8] = "2151300"
-        df.iloc[i, 9] = ""
-
-        if str(Decimal(str(df.iloc[i, 3])).normalize()) != df.iloc[i, 4]:
-            df.iloc[i, 5] = "N"
-            fail_count += 1
-        else:
-            df.iloc[i, 5] = "Y"
-            pass_count += 1
-
-    df = replace_empty_with_dash(df)
-    result_directory = "test result"
-    if not os.path.exists(result_directory):
-        os.makedirs(result_directory)
-
-    df.to_csv(os.path.join(result_directory,
-              f"telephone_result_{value}.csv"), index=False)
-
-    chart_data = [
-        {"name": "Y", "value": pass_count},
-        {"name": "N", "value": fail_count}
-    ]
-
-    return flask.jsonify({
-        "tableData": ast.literal_eval(df.to_json(orient='records')),
-        "chartData": chart_data
-    })
-
-
-# --------------------------------P1---------------------------------
-
 # @app.route('/api/Triangle_data', methods=['GET'])
-# def get_triangle_boundary():  
+# def telecom_charge_data2():
+#     current_directory = os.path.dirname(os.path.abspath(__file__))
+#     value = request.args.get('value')
+#     file_mapping = {
+#         '1': os.path.join(current_directory,'test_case','q1','triangle_boundary.csv'),
+#         '2': os.path.join(current_directory,'test_case','q1','triangle_equivalent.csv'),
+#     }
+
+#     file_path = file_mapping.get(value)
+#     if not file_path:
+#         return flask.jsonify({"message": "Invalid value parameter"}), HTTPStatus.BAD_REQUEST
+
+#     try:
+#         df = pd.read_csv(file_path)
+#         df = replace_empty_with_dash(df)
+#     except FileNotFoundError:
+#         return flask.jsonify({"message": "Test case file not found"}), HTTPStatus.NOT_FOUND
+
+#     return flask.jsonify({"tableData": df.to_json(orient='records')})
+#     # return flask.jsonify({"tableData": ast.literal_eval(df.to_json(orient='records'))})
+
+# @app.route('/api/Triangle_result', methods=['GET'])
+# def telecom_charge_result2():
 #     current_directory = os.path.dirname(os.path.abspath(__file__))
 #     value = request.args.get('value')
 #     file_mapping = {
@@ -190,47 +134,111 @@ def telecom_charge_result2():
 #         '2': os.path.join(current_directory,'test result', 'q1', 'triangle_equivalent.csv'),
 #     }
 
-#     csv_path = file_mapping.get(value)
-#     print(csv_path)
+#     file_path = file_mapping.get(value)
+#     if not file_path:
+#         return flask.jsonify({"message": "Invalid value parameter"}), HTTPStatus.BAD_REQUEST
+
+#     try:
+#         df = pd.read_csv(file_path)
+#     except FileNotFoundError:
+#         return flask.jsonify({"message": "Test case file not found"}), HTTPStatus.NOT_FOUND
+
+#     total_count = df.shape[0]
+#     pass_count = 0
+#     fail_count = 0
+
+#     for i in range(total_count):
+#         df.iloc[i, 4] = telephone.telephone(df.iloc[i, 1], df.iloc[i, 2])
+#         df.iloc[i, 7] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#         df.iloc[i, 8] = "2151300"
+#         df.iloc[i, 9] = ""
+
+#         if str(Decimal(str(df.iloc[i, 3])).normalize()) != df.iloc[i, 4]:
+#             df.iloc[i, 5] = "N"
+#             fail_count += 1
+#         else:
+#             df.iloc[i, 5] = "Y"
+#             pass_count += 1
+
+#     df = replace_empty_with_dash(df)
+#     result_directory = "test result"
+#     if not os.path.exists(result_directory):
+#         os.makedirs(result_directory)
+
+#     df.to_csv(os.path.join(result_directory,
+#               f"telephone_result_{value}.csv"), index=False)
+
+#     chart_data = [
+#         {"name": "Y", "value": pass_count},
+#         {"name": "N", "value": fail_count}
+#     ]
+
+#     return flask.jsonify({
+#         "tableData": ast.literal_eval(df.to_json(orient='records')),
+#         "chartData": chart_data
+#     })
 
 
-#     try:  
-#         df = pd.read_csv(csv_path)  
-#     except FileNotFoundError:  
-#         return jsonify({'error': f'File {csv_path} not found.'}), 404  
-#     except Exception as e:  
-#         return jsonify({'error': str(e)}), 500  
+# --------------------------------P1---------------------------------
+
+@app.route('/api/Triangle_data', methods=['GET'])
+def get_triangle_boundary():  
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    value = request.args.get('value')
+    file_mapping = {
+        '1': os.path.join(current_directory,'test_case', 'q1', 'triangle_boundary.csv'),
+        '2': os.path.join(current_directory,'test_case', 'q1', 'triangle_equivalent.csv'),
+    }
+
+    csv_path = file_mapping.get(value)
+    print(csv_path)
+
+
+    try:  
+        df = pd.read_csv(csv_path)  
+    except FileNotFoundError:  
+        return jsonify({'error': f'File {csv_path} not found.'}), 404  
+    except Exception as e:  
+        return jsonify({'error': str(e)}), 500  
   
-#     # 将 DataFrame 转换为 JSON  
-#     # 如果你想要一个包含列表的 JSON，其中每个列表项是一个字典（代表 DataFrame 的一行）  
-#     # 你可以使用 to_dict 方法，并指定 'records' 作为参数  
-#     json_data = df.to_dict(orient='records')  
-#     print(df)
+    # 将 DataFrame 转换为 JSON  
+    # 如果你想要一个包含列表的 JSON，其中每个列表项是一个字典（代表 DataFrame 的一行）  
+    # 你可以使用 to_dict 方法，并指定 'records' 作为参数  
+    json_data = df.to_dict(orient='records')  
+    print(df)
   
-#     return jsonify(json_data)  
+    return jsonify({'tableData':json_data})  
 
-# @app.route('/api/Triangle_result', methods=['GET'])
-# def get_triangle_result():  
-#     current_directory = os.path.dirname(os.path.abspath(__file__))
-#     value = request.args.get('value')
-#     file_mapping = {
-#         '1': os.path.join(current_directory,'test result','q1','triangle_boundary.csv'),
-#         '2': os.path.join(current_directory,'test result','q1','triangle_equivalent.csv'),
-#     }
+@app.route('/api/Triangle_result', methods=['GET'])
+def get_triangle_result():  
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    value = request.args.get('value')
+    file_mapping = {
+        '1': os.path.join(current_directory,'test result','q1','triangle_boundary.csv'),
+        '2': os.path.join(current_directory,'test result','q1','triangle_equivalent.csv'),
+    }
 
-#     csv_path = file_mapping.get(value)
+    csv_path = file_mapping.get(value)
     
 
-#     try:  
-#         df = pd.read_csv(csv_path)  
-#     except FileNotFoundError:  
-#         return jsonify({'error': f'File {csv_path} not found.'}), 404  
-#     except Exception as e:  
-#         return jsonify({'error': str(e)}), 500  
+    try:  
+        df = pd.read_csv(csv_path)  
+    except FileNotFoundError:  
+        return jsonify({'error': f'File {csv_path} not found.'}), 404  
+    except Exception as e:  
+        return jsonify({'error': str(e)}), 500  
    
-#     json_data = df.to_dict(orient='records')  
+    json_data = df.to_dict(orient='records')  
   
-#     return jsonify(json_data)  
+    pass_count=len(json_data)
+    fail_count=0
+    
+    chart_data = [
+        {"name": "Y", "value": pass_count},
+        {"name": "N", "value": fail_count}
+    ]
+  
+    return jsonify({'tableData':json_data,'chartData':chart_data}) 
 
 
 # --------------------------------P2---------------------------------
