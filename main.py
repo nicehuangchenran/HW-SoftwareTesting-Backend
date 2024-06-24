@@ -28,9 +28,10 @@ def replace_empty_with_dash(df):
 def telecom_charge_data():
     value = request.args.get('value')
     file_mapping = {
-        '1': 'test_case/telephone_boundary.csv',
-        '2': 'test_case/telephone_equivalent.csv',
-        '3': 'test_case/telephone_decision.csv'
+        '1': 'test_case/q4/telephone_boundary.csv',
+        '2': 'test_case/q4/telephone_equivalent.csv',
+        '3': 'test_case/q4/telephone_decision.csv',
+        '4': 'test_case/q4/telephone_optimal.csv'
     }
 
     file_path = file_mapping.get(value)
@@ -49,9 +50,10 @@ def telecom_charge_data():
 def telecom_charge_result():
     value = request.args.get('value')
     file_mapping = {
-        '1': 'test_case/telephone_boundary.csv',
-        '2': 'test_case/telephone_equivalent.csv',
-        '3': 'test_case/telephone_decision.csv'
+        '1': 'test_case/q4/telephone_boundary.csv',
+        '2': 'test_case/q4/telephone_equivalent.csv',
+        '3': 'test_case/q4/telephone_decision.csv',
+        '4': 'test_case/q4/telephone_optimal.csv'
     }
 
     file_path = file_mapping.get(value)
@@ -88,7 +90,7 @@ def telecom_charge_result():
             pass_count += 1
 
     df = replace_empty_with_dash(df)
-    result_directory = "test result"
+    result_directory = "test result/q4"
     if not os.path.exists(result_directory):
         os.makedirs(result_directory)
 
